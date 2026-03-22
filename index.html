@@ -126,18 +126,7 @@
         });
     }
 
-    function launchDashAndDeposit() {
-        closeStatic();
-        launchDash();
-        setTimeout(() => {
-            showStaticNotif(`
-                <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
-                <b style="color: #28a745;">DEPOSIT DETECTED</b>
-                <p style="font-size: 0.85rem; color: #333;"><b>Lolikishee USA CHICAGO</b><br>Amount: <span style="color:red; font-weight:900;">200$</span></p>
-                <button class="btn-ok" onclick="closeStatic()">ok i have understood</button>
-            `);
-        }, 1000);
-    }
+    
 
     function launchDash() {
         document.getElementById('login-view').classList.add('hidden');
@@ -147,7 +136,7 @@
         updateUIState();
     }
 
-    function updateUIState() {
+function updateUIState() {
         const noteBox = document.getElementById('official-notice-box');
         if (isUpgraded) {
             document.getElementById('main-balance').innerText = "2,906,702.40 UGX";
