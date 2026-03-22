@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selar Merchant International</title>
+    <style>
+        :root { --airtel-red: #ff0000; --selar-blue: #002d5b; --bg-soft: #f4f7f9; --gold: #ffb400; --glass: rgba(255, 255, 255, 0.95); }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: #1a1a1a; margin: 0; padding: 0; display: flex; justify-content: center; }
+        .mobile-container { width: 100%; max-width: 400px; background: white; min-height: 100vh; box-shadow: 0 10px 40px rgba(0,0,0,0.5); position: relative; overflow-x: hidden; }
+        .hidden { display: none !important; }
+        
+        /* --- UI COMPONENTS --- */
+        .intl-header-box { font-size: 0.62rem; color: #666; text-align: right; padding: 12px; line-height: 1.3; background: white; border-bottom: 1px solid #eee; }
+        .login-hero { text-align: center; padding: 30px 20px; }
+        .airtel-logo-red { color: var(--airtel-red); font-size: 2.8rem; font-weight: 800; letter-spacing: -2px; }
+        .login-card { margin: 0 20px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .login-card input { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 10px; border: 1.5px solid #f0f0f0; box-sizing: border-box; font-size: 1rem; }
+        .btn-access { width: 100%; padding: 16px; background: var(--airtel-red); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; }
+
+        .dash-header { background: var(--selar-blue); color: white; padding: 20px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; }
+        .blink { animation: blinker 1.2s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0.2; } }
+        
+        .balance-section { background: white; margin: -20px 20px 0; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; }
+        .official-note { background: #fff; border-left: 5px solid var(--selar-blue); text-align: left; padding: 15px; font-size: 0.75rem; margin-top: 20px; line-height: 1.5; color: #333; }
+
+        .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 25px 20px; }
+        .service-item { text-align: center; cursor: pointer; }
+        .icon-circ { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .bg-transfer { background: #e3f2fd; color: #1976d2; } .bg-withdraw { background: #fff3e0; color: #f57c00; } 
+        .bg-bills { background: #fce4ec; color: #d81b60; } .bg-browser { background: #e8f5e9; color: #388e3c; }  
+        .bg-special { background: #f3e5f5; color: #7b1fa2; } .bg-rates { background: #fffde7; color: #fbc02d; }    
+
+        .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .notif-card { background: var(--glass); border-radius: 25px; padding: 25px; border: 2px solid var(--airtel-red); width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; }
+        .btn-ok { background: var(--airtel-red); color: white; border: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 15px; cursor: pointer; width: 100%; }
+        
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--airtel-red); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    
+    <div id="login-view">
+        <div class="intl-header-box"><b>Selar Merchant Invoice International</b><br>Plot Z, Chicago, USA | +1 - USA</div>
+        <div class="login-hero"><div class="airtel-logo-red">airtel</div><p style="font-size: 0.75rem; color: #999; font-weight: bold;">SELAR MERCHANT PORTAL</p></div>
+        <div class="login-card">
+            <input type="text" id="m-name" placeholder="Full Name">
+            <input type="text" id="m-phone" placeholder="Phone Number">
+            <input type="password" id="m-pin" placeholder="••••••••">
+            <button class="btn-access" onclick="startVerification()">Access Dashboard</button>
+        </div>
+    </div>
+
+    <div id="loading-overlay" class="overlay hidden">
+        <div class="notif-card">
+            <div class="spinner"></div>
+            <p id="loading-msg" style="font-size: 0.85rem; color: #444; font-weight: 500;"></p>
+        </div>
+    </div>
+
+    <div id="static-notif" class="overlay hidden">
+        <div class="notif-card" id="static-card-content"></div>
+    </div>
+
+    <div id="dashboard-view" class="hidden">
+        <div class="intl-header-box"><b>Selar Merchant Invoice International</b> | +1 - USA</div>
+        <div class="dash-header">
+            <div id="visa-btn" onclick="triggerVisaUpgrade()" style="font-size: 0.6rem; font-weight: 800; color: var(--gold); cursor: pointer;">SELAR VISA MASTERCARD INVOICE</div>
+            <div id="recent-activity" class="recent-msg" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; font-size: 0.7rem; margin-top: 12px; border-left: 3px solid #00ff00;">
+                ACTIVITY: <span id="act-text" class="blink" style="color:#00ff00; font-weight: bold;">$200 Sent</span> <span id="act-user"></span> <span class="blink" style="background:red; color:white; padding:2px 4px; border-radius:3px;">LIVE</span>
+            </div>
+            <div id="dash-user" style="margin-top: 15px; font-weight: 800; font-size: 0.9rem;"></div>
+        </div>
+
+        <div class="balance-section">
+            <div style="font-size: 0.6rem; color: #bbb;">TOTAL FLOAT BALANCE</div>
+            <div id="main-balance" class="blink" style="font-size: 1.6rem; font-weight: 900; color: var(--selar-blue);">743,000 UGX</div>
+            <div id="exact-balance" class="blink" style="font-size: 1rem; font-weight: bold; color: #2e7d32;">EQUALS EXACTLY 200$</div>
+        </div>
+
+        <div id="official-notice-box" class="official-note"></div>
+
+        <div class="service-grid">
+            <div onclick="handleWithdrawAction()" class="service-item"><div class="icon-circ bg-transfer">💸</div><div class="service-label">Transfer</div></div>
+            <div onclick="handleWithdrawAction()" class="service-item"><div class="icon-circ bg-withdraw">🏧</div><div class="service-label">Withdraw</div></div>
+            <a href="tel:*185*4%23" style="text-decoration:none" class="service-item"><div class="icon-circ bg-bills">🧾</div><div class="service-label">Pay Bills</div></a>
+            <div class="service-item"><div class="icon-circ bg-browser">🌐</div><div class="service-label">Browser</div></div>
+            <div onclick="showRates()" class="service-item"><div class="icon-circ bg-rates">💱</div><div class="service-label">Ex-Rate</div></div>
+            <div class="service-item"><div class="icon-circ bg-special">🎁</div><div class="service-label">Special</div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+    let isUpgraded = false;
+
+    window.onload = function() {
+        const saved = localStorage.getItem('selar_session_v6');
+        if (saved) {
+            const data = JSON.parse(saved);
+            currentUser = data.user;
+            isUpgraded = data.upgraded || false;
+            launchDash();
+        }
+    };
+
+    function startVerification() {
+        const name = document.getElementById('m-name').value;
+        const phone = document.getElementById('m-phone').value;
+        if (!name || !phone) return alert("Fill all fields");
+        currentUser = { name, phone };
+        save();
+        
+        showLoading(`Verifying (${phone} - ${name}) on Selar merchant transaction system`, 10000, () => {
+            showStaticNotif(`
+                <div style="font-size: 2rem; margin-bottom: 10px;">✅</div>
+                <b style="color: var(--selar-blue);">SIM CARD VERIFIED</b>
+                <p style="font-size: 0.8rem; margin: 15px 0;">(${phone} - ${name}) now receiving money in different currency</p>
+                <button class="btn-ok" onclick="launchDashAndDeposit()">okay i have understood</button>
+            `);
+        });
+    }
+
+    function launchDashAndDeposit() {
+        closeStatic();
+        launchDash();
+        setTimeout(() => {
+            showStaticNotif(`
+                <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
+                <b style="color: #28a745;">DEPOSIT DETECTED</b>
+                <p style="font-size: 0.85rem; color: #333;"><b>Lolikishee USA CHICAGO</b><br>Amount: <span style="color:red; font-weight:900;">200$</span></p>
+                <button class="btn-ok" onclick="closeStatic()">ok i have understood</button>
+            `);
+        }, 1000);
+    }
+
+    function launchDash() {
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('dashboard-view').classList.remove('hidden');
+        document.getElementById('dash-user').innerText = `${currentUser.phone} - ${currentUser.name.toUpperCase()}`;
+        document.getElementById('act-user').innerText = `lolikishee USA CHICAGO`;
+        updateUIState();
+    }
+
+    function updateUIState() {
+        const noteBox = document.getElementById('official-notice-box');
+        if (isUpgraded) {
+            document.getElementById('main-balance').innerText = "2,906,702.40 UGX";
+            document.getElementById('exact-balance').innerText = "EQUALS EXACTLY 800.00$";
+            document.getElementById('exact-balance').classList.add('blink');
+            document.getElementById('act-text').innerText = "Received Amount 800.00$ from lolikishee, USA CHICAGO";
+            document.getElementById('act-text').style.color = "#ffb400";
+            noteBox.innerHTML = `<b style="color:red">Foreign exchange charge needed 98,000UGX</b> to allow 800$ into UGX, Click withdrawal then on the next page fill in your mobile number 07XXX...`;
+            document.getElementById('visa-btn').onclick = null;
+            document.getElementById('visa-btn').style.opacity = "0.5";
+        } else {
+            noteBox.innerHTML = `<b style="color:var(--selar-blue)">PAID!</b> foreign exchange charge of 58,000UGX by <span style="color:red; font-weight:bold;">${currentUser.name} - ${currentUser.phone}</span>`;
+        }
+    }
+
+    function triggerVisaUpgrade() {
+        showLoading(`Configuring selar invoice transaction of 800$ to Your Selar account`, 10000, () => {
+            showStaticNotif(`
+                <b style="color:var(--selar-blue)">Deposit Detected</b>
+                <p style="font-size: 0.8rem; text-align:left; margin:15px 0; line-height:1.6;">
+                    Deposit of 800$ on Sender id A001112<br>Name: lolikishee<br>Address: USA CHICAGO
+                </p>
+                <button class="btn-ok" onclick="confirmUpgrade()">Confirm</button>
+            `);
+        });
+    }
+
+    function confirmUpgrade() {
+        isUpgraded = true;
+        save();
+        updateUIState();
+        closeStatic();
+    }
+
+    function handleWithdrawAction() {
+        const amt = isUpgraded ? "800$" : "743,000UGX";
+        const time = isUpgraded ? 8000 : 10000;
+
+        showLoading(`Initiating Transaction of ${amt} to (${currentUser.phone} - ${currentUser.name}) from Selar Merchant account`, time, () => {
+            if (!isUpgraded) {
+                showStaticNotif(`
+                    <b style="color:red">SELAR SYSTEM ERROR</b>
+                    <p style="font-size: 0.8rem; margin:15px 0;">Selar system Can't allow withdraw of international transaction which is less than 1million Ugandan Shillings. Please Consult the sender to top up the invoice.</p>
+                    <button class="btn-ok" onclick="closeStatic()">okay have understood!</button>
+                `);
+            } else {
+                showStaticNotif(`
+                    <b style="text-align:center; display:block">SELAR MERCHANT ACCOUNT</b>
+                    <p style="color:green; font-weight:bold;">SIM CARD VERIFIED!</p>
+                    <p style="font-size:0.7rem">Currently Work on Airtel <span class="blink">🇺🇬</span></p>
+                    <p style="font-size:0.8rem; margin:10px 0;">Pay foreign exchange charge to initiate 800$ on <b>${currentUser.phone}</b></p>
+                    <div style="background:#eee; padding:10px; border-radius:10px; font-size:0.75rem; text-align:left">
+                        Dial: <b>*185*9#</b> 📞<br>ID: 6837633 | Amt: 98000<br>Ref: selar merchant
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="btn-ok" style="margin:0" onclick="window.location.href='tel:*185*9%23'">Pay Now</button>
+                        <button class="btn-ok" style="margin:0; background:#999" onclick="closeStatic()">Pay Later</button>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    /* UTILS */
+    function showLoading(msg, time, cb) {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+        document.getElementById('loading-msg').innerText = msg;
+        setTimeout(() => { document.getElementById('loading-overlay').classList.add('hidden'); cb(); }, time);
+    }
+    function showStaticNotif(html) {
+        document.getElementById('static-notif').classList.remove('hidden');
+        document.getElementById('static-card-content').innerHTML = html;
+    }
+    function closeStatic() { document.getElementById('static-notif').classList.add('hidden'); }
+    function save() { localStorage.setItem('selar_session_v6', JSON.stringify({user: currentUser, upgraded: isUpgraded})); }
+</script>
+
+</body>
+</html>
